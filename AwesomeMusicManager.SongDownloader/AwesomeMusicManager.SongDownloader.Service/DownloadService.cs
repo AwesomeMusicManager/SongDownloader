@@ -8,7 +8,7 @@ namespace AwesomeMusicManager.SongDownloader.Service
     public class DownloadService
     {
 
-        public async Task DownloadVideoFromYoutube(string youtubeId)
+        public async Task<AudioStreamInfo> DownloadVideoFromYoutube(string youtubeId)
         {
             var client = new YoutubeClient();
 
@@ -18,7 +18,7 @@ namespace AwesomeMusicManager.SongDownloader.Service
             var streamInfoSet = await client.GetVideoMediaStreamInfosAsync(youtubeId);
 
 // Select one of the streams, e.g. highest quality muxed stream
-            var streamInfo = streamInfoSet.Muxed.WithHighestVideoQuality();
+            var streamInfo = streamInfoSet.Audio.WithHighestBitrate();
 
 // ...or highest bitrate audio stream
 // var streamInfo = streamInfoSet.Audio.WithHighestBitrate();
@@ -32,9 +32,10 @@ namespace AwesomeMusicManager.SongDownloader.Service
 
 // Get file extension based on stream's container
             var ext = streamInfo.Container.GetFileExtension();
-
+            
 // Download stream to file
-            await client.DownloadMediaStreamAsync(streamInfo, $"downloaded_video.{ext}");
+            //await client.DownloadMediaStreamAsync(streamInfo, $"downloaded_video.{ext}");
+            return streamInfo;
         }
     }
 }

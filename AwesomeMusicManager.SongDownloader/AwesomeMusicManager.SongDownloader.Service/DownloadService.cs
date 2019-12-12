@@ -1,12 +1,28 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using AwesomeMusicManager.SongDownloader.Model;
+using AwesomeMusicManager.SongDownloader.Model.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
+using Newtonsoft.Json;
 
 namespace AwesomeMusicManager.SongDownloader.Service
 {
-    public class DownloadService
+    public class DownloadService : IDownloadService
     {
+        private readonly IOptions<AlbumServiceOptions> _albumService;
+
+        private readonly ILogger<DownloadService> _logger;
+        
+        public DownloadService(IOptions<AlbumServiceOptions> albumService, ILogger<DownloadService> logger)
+        {
+            _albumService = albumService;
+            _logger = logger;
+        }
 
         public async Task<AudioStreamInfo> DownloadVideoFromYoutube(string youtubeId)
         {
@@ -21,6 +37,22 @@ namespace AwesomeMusicManager.SongDownloader.Service
             
             //await client.DownloadMediaStreamAsync(streamInfo, $"downloaded_video.{ext}");
             return streamInfo;
+        }
+        
+        public async Task<Album> GetAlbumInfo(string albumId)
+        {
+            var client = new HttpClient();
+
+            // var videos = await client.SearchVideosAsync(youtubeId, 1);
+            var albumResponse = client.GetAsync($"{_albumService.Value.Uri}api/album/{albumId}").Result;
+
+            if (albumResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return JsonConvert.DeserializeObject<Album>(albumResponse.Content.ReadAsStringAsync().Result);
+            }
+            
+            _logger.LogError("O request nao foi bem sucedido", albumResponse);
+            return null;
         }
     }
 }

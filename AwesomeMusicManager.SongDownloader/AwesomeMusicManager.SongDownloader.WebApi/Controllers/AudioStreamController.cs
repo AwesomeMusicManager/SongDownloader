@@ -8,6 +8,7 @@ using AwesomeMusicManager.SongDownloader.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using YoutubeExplode.Models;
 using YoutubeExplode.Models.MediaStreams;
 
 namespace AwesomeMusicManager.SongDownloader.WebApi.Controllers
@@ -39,6 +40,14 @@ namespace AwesomeMusicManager.SongDownloader.WebApi.Controllers
         {
             _logger.LogInformation("Iniciado fluxo de obtençao de dados de album");
             return await _downloadService.GetAlbumInfo(albumId);
+        }
+
+        [HttpGet]
+        [Route("information/video/{query}")]
+        public async Task<Video> GetVideoInformations([FromRoute] string query)
+        {
+            _logger.LogInformation("Iniciado fluxo de obtençao de dados de videos do youtube");
+            return await _downloadService.SearchYoutubeVideo(query);
         }
     }
 }

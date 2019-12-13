@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using YoutubeExplode.Models;
 using YoutubeExplode.Models.MediaStreams;
 
 namespace AwesomeMusicManager.SongDownloader.Model.Interfaces
@@ -8,5 +10,7 @@ namespace AwesomeMusicManager.SongDownloader.Model.Interfaces
         Task<AudioStreamInfo> DownloadVideoFromYoutube(string youtubeId);
 
         Task<Album> GetAlbumInfo(string albumId);
+
+        Task<Video> SearchYoutubeVideo(string query);
     }
 }

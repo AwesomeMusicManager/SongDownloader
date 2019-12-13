@@ -51,7 +51,9 @@ namespace AwesomeMusicManager.SongDownloader.WebApi
                 .CreateLogger();
             
             services.AddControllers();
-            
+
+            services.AddCors();
+
             // Add functionality to inject IOptions<T>
             services.AddOptions();
 
@@ -89,7 +91,8 @@ namespace AwesomeMusicManager.SongDownloader.WebApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors(option => option.AllowAnyOrigin());
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
